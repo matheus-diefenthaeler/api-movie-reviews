@@ -1,16 +1,13 @@
 package br.com.letscode.matheus.criticasdefilme.controler;
 
-import br.com.letscode.matheus.criticasdefilme.dto.RatingDto;
 import br.com.letscode.matheus.criticasdefilme.dto.UserDto;
-import br.com.letscode.matheus.criticasdefilme.entities.User;
-
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import br.com.letscode.matheus.criticasdefilme.request.RateRequest;
+import br.com.letscode.matheus.criticasdefilme.response.MovieResponse;
 import br.com.letscode.matheus.criticasdefilme.service.RatingService;
 import br.com.letscode.matheus.criticasdefilme.service.UserService;
+import com.google.gson.Gson;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +15,17 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -42,17 +39,17 @@ public class UserController {
 
     private static final String APIKEY = "23b2e8d6";
     private static final String API_OMDb_PATH = "http://www.omdbapi.com/";
+    private static final String SECRET_KEY = "eyJhbGciOiJIUzUxMiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA0KICAibmFtZSI6ICJBbmlzaCBOYXRoIiwNCiAgImlhdCI6IDE1MTYyMzkwMjINCn0.CRBkfm1no-OCnHcNGTOBP4nf6CyvzuLyOwCeS0gpJlppZXpAugPbaZTtmyBegL0SfSJSk_ZyheBjib7Hol-VYw";
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public String login(@RequestParam("user") String email, @RequestParam("password") String pwd) {
-        //TODO Lembrar de coisar o password
+        //TODO Lembrar de usar encrypt no password
 
         userService.verifyUser(email, pwd);
         return getJWTToken(email);
     }
 
     private String getJWTToken(String username) {
-        String secretKey = "eyJhbGciOiJIUzUxMiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA0KICAibmFtZSI6ICJBbmlzaCBOYXRoIiwNCiAgImlhdCI6IDE1MTYyMzkwMjINCn0.CRBkfm1no-OCnHcNGTOBP4nf6CyvzuLyOwCeS0gpJlppZXpAugPbaZTtmyBegL0SfSJSk_ZyheBjib7Hol-VYw";
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                 .commaSeparatedStringToAuthorityList("ROLE_USER");
 
@@ -67,7 +64,7 @@ public class UserController {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 600000))
                 .signWith(SignatureAlgorithm.HS512,
-                        secretKey.getBytes()).compact();
+                        SECRET_KEY.getBytes()).compact();
 
         return "Bearer " + token;
     }
@@ -90,17 +87,21 @@ public class UserController {
     }
 
     @GetMapping(value = "/movie/{id}")
-    public ResponseEntity<Object> findMovie(@PathVariable String id) {
+    public ResponseEntity<MovieResponse> findMovie(@PathVariable String id) {
         
         String url = new StringBuilder().append(API_OMDb_PATH).append("/?apikey=").
                 append(APIKEY).append("&i=").append(id).toString();
+
         RestTemplate restTemplate = new RestTemplate();
 
-        List<RatingDto> byimdbID = ratingService.findByimdbID(id);
-        log.info(byimdbID.stream().findFirst().get().getComment());
-
         Object obj = restTemplate.getForObject(url, Object.class);
-        return ResponseEntity.ok().body(obj);
+
+        Gson gson = new Gson();
+        String s = gson.toJson(obj);
+        MovieResponse movieResponse = gson.fromJson(s, MovieResponse.class);
+        movieResponse.setMovieRating(ratingService.getRatings(id));
+
+        return ResponseEntity.ok().body(movieResponse);
     }
 
     @RequestMapping(value = "/movie/rate", method = RequestMethod.POST)
