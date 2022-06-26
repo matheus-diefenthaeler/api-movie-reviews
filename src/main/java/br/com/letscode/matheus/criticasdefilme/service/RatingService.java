@@ -63,9 +63,9 @@ public class RatingService {
         if (userScore >= 20 && userScore < 100) {
             user.get().setProfile(Profile.BASICO);
         } else if (userScore < 1000) {
-            user.get().setProfile(Profile.MODERADOR);
-        } else {
             user.get().setProfile(Profile.AVANCADO);
+        } else {
+            user.get().setProfile(Profile.MODERADOR);
         }
     }
 }
