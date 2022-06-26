@@ -1,5 +1,6 @@
 package br.com.letscode.matheus.criticasdefilme.controler;
 
+import br.com.letscode.matheus.criticasdefilme.dto.RatingDto;
 import br.com.letscode.matheus.criticasdefilme.dto.UserDto;
 import br.com.letscode.matheus.criticasdefilme.entities.User;
 
@@ -7,7 +8,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import br.com.letscode.matheus.criticasdefilme.request.RateRequest;
+import br.com.letscode.matheus.criticasdefilme.service.RatingService;
 import br.com.letscode.matheus.criticasdefilme.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,23 +27,28 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
+@Slf4j
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RatingService ratingService;
+
+    private static final String APIKEY = "23b2e8d6";
+    private static final String API_OMDb_PATH = "http://www.omdbapi.com/";
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public String login(@RequestParam("user") String email, @RequestParam("password") String pwd) {
+        //TODO Lembrar de coisar o password
 
-        String token = getJWTToken(email);
-        User user = new User();
-        user.setEmail(email);
-        return token;
-
+        userService.verifyUser(email, pwd);
+        return getJWTToken(email);
     }
 
     private String getJWTToken(String username) {
@@ -64,7 +73,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto dto){
+    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto dto) {
         dto = userService.saveUser(dto);
         var uri =
                 ServletUriComponentsBuilder.fromCurrentRequestUri()
@@ -80,6 +89,28 @@ public class UserController {
         return ResponseEntity.ok().body(dto);
     }
 
+    @GetMapping(value = "/movie/{id}")
+    public ResponseEntity<Object> findMovie(@PathVariable String id) {
+        
+        String url = new StringBuilder().append(API_OMDb_PATH).append("/?apikey=").
+                append(APIKEY).append("&i=").append(id).toString();
+        RestTemplate restTemplate = new RestTemplate();
 
+        List<RatingDto> byimdbID = ratingService.findByimdbID(id);
+        log.info(byimdbID.stream().findFirst().get().getComment());
 
+        Object obj = restTemplate.getForObject(url, Object.class);
+        return ResponseEntity.ok().body(obj);
+    }
+
+    @RequestMapping(value = "/movie/rate", method = RequestMethod.POST)
+    public ResponseEntity<Object> rateMovie(@RequestBody RateRequest rateRequest) {
+        var dto = ratingService.saveRating(rateRequest);
+        var uri =
+                ServletUriComponentsBuilder.fromCurrentRequestUri()
+                        .path("/movie/rate")
+                        .buildAndExpand(dto.getId())
+                        .toUri();
+        return ResponseEntity.created(uri).body(rateRequest);
+    }
 }

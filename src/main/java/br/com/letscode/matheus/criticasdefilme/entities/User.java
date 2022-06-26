@@ -12,7 +12,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,11 +25,14 @@ import javax.persistence.Table;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     private String email;
     private String password;
     private Long score;
+    @OneToMany(mappedBy = "user")
+    private List<Rating> ratings;
 
     @Enumerated(EnumType.STRING)
     private Profile profile;

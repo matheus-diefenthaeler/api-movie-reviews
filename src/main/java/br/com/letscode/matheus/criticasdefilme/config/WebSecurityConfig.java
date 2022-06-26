@@ -19,7 +19,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/authenticate").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/user").permitAll()
+                .antMatchers("/registration").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated();
         http.headers().frameOptions().disable();
