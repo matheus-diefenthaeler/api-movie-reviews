@@ -1,7 +1,9 @@
 package br.com.letscode.matheus.criticasdefilme.service;
 
 import br.com.letscode.matheus.criticasdefilme.dto.RatingDto;
+import br.com.letscode.matheus.criticasdefilme.entities.Profile;
 import br.com.letscode.matheus.criticasdefilme.entities.Rating;
+import br.com.letscode.matheus.criticasdefilme.entities.User;
 import br.com.letscode.matheus.criticasdefilme.repositories.RatingRepository;
 import br.com.letscode.matheus.criticasdefilme.repositories.UserRepository;
 import br.com.letscode.matheus.criticasdefilme.request.RateRequest;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RatingService {
@@ -29,6 +32,10 @@ public class RatingService {
         entity.setUser(userRepository.findById(rateRequest.getIdUser()).get());
         entity.setImdbID(rateRequest.getImdbID());
         entity = ratingRepository.save(entity);
+
+        increaseScore(rateRequest.getIdUser());
+        upgradeProfile(rateRequest.getIdUser());
+
         return new RatingDto(entity);
     }
 
@@ -40,5 +47,25 @@ public class RatingService {
     public List<RatingDto> getRatings(String id) {
         return ratingRepository.findByImdbID(id);
 
+    }
+
+    public void increaseScore(Long idUser) {
+        Optional<User> user = userRepository.findById(idUser);
+        user.get().setScore(user.get().getScore() + 1);
+
+    }
+
+    public void upgradeProfile(Long idUser) {
+        Optional<User> user = userRepository.findById(idUser);
+        Long userScore = user.get().getScore();
+        String userDescription = user.get().getProfile().getDescription();
+
+        if (userScore >= 20 && userScore < 100) {
+            user.get().setProfile(Profile.BASICO);
+        } else if (userScore < 1000) {
+            user.get().setProfile(Profile.MODERADOR);
+        } else {
+            user.get().setProfile(Profile.AVANCADO);
+        }
     }
 }
