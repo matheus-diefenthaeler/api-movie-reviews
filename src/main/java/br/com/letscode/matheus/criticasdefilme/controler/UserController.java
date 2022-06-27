@@ -38,8 +38,7 @@ public class UserController {
     @Autowired
     private RatingService ratingService;
 
-    private static final String APIKEY = "23b2e8d6";
-    private static final String API_OMDb_PATH = "http://www.omdbapi.com/";
+
     private static final String SECRET_KEY = "eyJhbGciOiJIUzUxMiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA0KICAibmFtZSI6ICJBbmlzaCBOYXRoIiwNCiAgImlhdCI6IDE1MTYyMzkwMjINCn0.CRBkfm1no-OCnHcNGTOBP4nf6CyvzuLyOwCeS0gpJlppZXpAugPbaZTtmyBegL0SfSJSk_ZyheBjib7Hol-VYw";
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
@@ -85,46 +84,6 @@ public class UserController {
     public ResponseEntity<UserDto> findById(@PathVariable Long id) {
         var dto = userService.findById(id);
         return ResponseEntity.ok().body(dto);
-    }
-
-    @GetMapping(value = "/movie/{id}")
-    public ResponseEntity<MovieResponse> findMovie(@PathVariable String id) {
-        
-        String url = new StringBuilder().append(API_OMDb_PATH).append("/?apikey=").
-                append(APIKEY).append("&i=").append(id).toString();
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        Object obj = restTemplate.getForObject(url, Object.class);
-
-        Gson gson = new Gson();
-        String s = gson.toJson(obj);
-        MovieResponse movieResponse = gson.fromJson(s, MovieResponse.class);
-        movieResponse.setMovieRating(ratingService.getRatings(id));
-
-        return ResponseEntity.ok().body(movieResponse);
-    }
-
-    @RequestMapping(value = "/movie/rate", method = RequestMethod.POST)
-    public ResponseEntity<Object> rateMovie(@RequestBody RateRequest rateRequest) {
-        var dto = ratingService.saveRating(rateRequest);
-        var uri =
-                ServletUriComponentsBuilder.fromCurrentRequestUri()
-                        .path("/movie/rate")
-                        .buildAndExpand(dto.getId())
-                        .toUri();
-        return ResponseEntity.created(uri).body(rateRequest);
-    }
-
-    @RequestMapping(value = "/reply", method = RequestMethod.POST)
-    public ResponseEntity<Object> repplyCommentRate(@RequestBody ReplyCommentRequest ReplyCommentRequest) {
-        var dto = ratingService.replyRating(ReplyCommentRequest);
-        var uri =
-                ServletUriComponentsBuilder.fromCurrentRequestUri()
-                        .path("/reply")
-                        .buildAndExpand(dto.getId())
-                        .toUri();
-        return ResponseEntity.created(uri).body(ReplyCommentRequest);
     }
 
 }

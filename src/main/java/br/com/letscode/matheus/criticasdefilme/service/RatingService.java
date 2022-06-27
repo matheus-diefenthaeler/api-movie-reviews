@@ -34,15 +34,15 @@ public class RatingService {
     @Transactional
     public RatingDto saveRating(RateRequest rateRequest) {
         Optional<User> user = userRepository.findById(rateRequest.getIdUser());
-        var entity = new Rating();
 
-        entity.setRate(rateRequest.getRate());
-
-        if (rateRequest.getComment() != null) {
-            checkPermission(rateRequest.getIdUser());
-            entity.setComment(rateRequest.getComment());
+        if (rateRequest.getComment() != null && !isAllowedToComment(user.get())) {
+            throw new PermissionDeniedException("User not allowed to comment");
         }
 
+        var entity = new Rating();
+
+        entity.setComment(rateRequest.getComment());
+        entity.setRate(rateRequest.getRate());
         entity.setUser(user.get());
         entity.setImdbID(rateRequest.getImdbID());
         entity = ratingRepository.save(entity);
@@ -52,11 +52,12 @@ public class RatingService {
         return new RatingDto(entity);
     }
 
+    @Transactional
     public ReplyCommentDto replyRating(ReplyCommentRequest replyRequest) {
         Optional<User> user = userRepository.findById(replyRequest.getIdUser());
         Optional<Rating> rating = ratingRepository.findById(replyRequest.getIdRating());
 
-        if (!isAllowedToComment(replyRequest.getIdUser())) {
+        if (!isAllowedToComment(user.get())) {
             throw new PermissionDeniedException("User not allowed to reply");
         }
         var entity = new ReplyComment();
@@ -99,17 +100,7 @@ public class RatingService {
         }
     }
 
-    public boolean checkPermission(Long idUser) {
-        Optional<User> user = userRepository.findById(idUser);
-        if (user.get().getProfile().getDescription().equals("Leitor")) {
-            throw new PermissionDeniedException("User not allowed to comment");
-        }
-        return true;
-    }
-
-    public boolean isAllowedToComment(Long idUser) {
-        if (idUser != null) return false;
-        Optional<User> user = userRepository.findById(idUser);
-        return (!user.get().getProfile().getDescription().equals("Leitor"));
+    public boolean isAllowedToComment(User user) {
+        return (user != null && !user.getProfile().getDescription().equals("Leitor"));
     }
 }
