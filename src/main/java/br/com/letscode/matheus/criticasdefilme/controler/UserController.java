@@ -2,6 +2,7 @@ package br.com.letscode.matheus.criticasdefilme.controler;
 
 import br.com.letscode.matheus.criticasdefilme.dto.UserDto;
 import br.com.letscode.matheus.criticasdefilme.request.RateRequest;
+import br.com.letscode.matheus.criticasdefilme.request.ReplyCommentRequest;
 import br.com.letscode.matheus.criticasdefilme.response.MovieResponse;
 import br.com.letscode.matheus.criticasdefilme.service.RatingService;
 import br.com.letscode.matheus.criticasdefilme.service.UserService;
@@ -114,4 +115,16 @@ public class UserController {
                         .toUri();
         return ResponseEntity.created(uri).body(rateRequest);
     }
+
+    @RequestMapping(value = "/reply", method = RequestMethod.POST)
+    public ResponseEntity<Object> repplyCommentRate(@RequestBody ReplyCommentRequest ReplyCommentRequest) {
+        var dto = ratingService.replyRating(ReplyCommentRequest);
+        var uri =
+                ServletUriComponentsBuilder.fromCurrentRequestUri()
+                        .path("/reply")
+                        .buildAndExpand(dto.getId())
+                        .toUri();
+        return ResponseEntity.created(uri).body(ReplyCommentRequest);
+    }
+
 }
