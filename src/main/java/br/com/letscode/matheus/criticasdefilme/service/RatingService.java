@@ -33,6 +33,7 @@ public class RatingService {
 
     @Transactional
     public RatingDto saveRating(RateRequest rateRequest) {
+        Optional<User> user = userRepository.findById(rateRequest.getIdUser());
         var entity = new Rating();
 
         entity.setRate(rateRequest.getRate());
@@ -42,60 +43,59 @@ public class RatingService {
             entity.setComment(rateRequest.getComment());
         }
 
-        entity.setUser(userRepository.findById(rateRequest.getIdUser()).get());
+        entity.setUser(user.get());
         entity.setImdbID(rateRequest.getImdbID());
         entity = ratingRepository.save(entity);
 
-        increaseScore(rateRequest.getIdUser());
-        upgradeProfile(rateRequest.getIdUser());
+        increaseUserScoreAndUpgrade(user.get());
 
         return new RatingDto(entity);
     }
 
     public ReplyCommentDto replyRating(ReplyCommentRequest replyRequest) {
+        Optional<User> user = userRepository.findById(replyRequest.getIdUser());
+        Optional<Rating> rating = ratingRepository.findById(replyRequest.getIdRating());
+
         if (!isAllowedToComment(replyRequest.getIdUser())) {
-            throw new PermissionDeniedException("User not allowed to comment");
+            throw new PermissionDeniedException("User not allowed to reply");
         }
         var entity = new ReplyComment();
 
         entity.setReply(replyRequest.getReply());
         entity.setUserID(replyRequest.getIdUser());
-        entity.setRating(ratingRepository.findById(replyRequest.getIdRating()).get());
+        entity.setRating(rating.get());
         entity = replyCommentRepository.save(entity);
 
-        increaseScore(replyRequest.getIdUser());
-        upgradeProfile(replyRequest.getIdUser());
-
+        increaseUserScoreAndUpgrade(user.get());
         return new ReplyCommentDto(entity);
     }
 
-
     public List<RatingDto> findByimdbID(String id) {
         return ratingRepository.findByImdbID(id);
-
     }
 
     public List<RatingDto> getRatings(String id) {
         return ratingRepository.findByImdbID(id);
-
     }
 
-    public void increaseScore(Long idUser) {
-        Optional<User> user = userRepository.findById(idUser);
-        user.get().setScore(user.get().getScore() + 1);
+    public void increaseUserScoreAndUpgrade(User user) {
+        increaseScore(user);
+        upgradeProfile(user);
     }
 
-    public void upgradeProfile(Long idUser) {
-        Optional<User> user = userRepository.findById(idUser);
-        Long userScore = user.get().getScore();
-        String userDescription = user.get().getProfile().getDescription();
+    public void increaseScore(User user) {
+        user.setScore(user.getScore() + 1);
+    }
+
+    public void upgradeProfile(User user) {
+        Long userScore = user.getScore();
 
         if (userScore >= 20 && userScore < 100) {
-            user.get().setProfile(Profile.BASICO);
+            user.setProfile(Profile.BASICO);
         } else if (userScore >= 100 && userScore < 1000) {
-            user.get().setProfile(Profile.AVANCADO);
+            user.setProfile(Profile.AVANCADO);
         } else if (userScore >= 1000) {
-            user.get().setProfile(Profile.MODERADOR);
+            user.setProfile(Profile.MODERADOR);
         }
     }
 
