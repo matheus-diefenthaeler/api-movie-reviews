@@ -11,4 +11,5 @@ public class RateRequest {
     private String comment;
     private Long rate;
     private String imdbID;
+
 }

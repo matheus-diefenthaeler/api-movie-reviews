@@ -19,7 +19,6 @@ public class MovieController {
     @Autowired
     private RatingService ratingService;
 
-
     @GetMapping(value = "/movie/{id}")
     public ResponseEntity<MovieResponse> findMovie(@PathVariable String id) {
 

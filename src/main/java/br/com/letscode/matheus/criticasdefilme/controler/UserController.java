@@ -85,5 +85,4 @@ public class UserController {
         var dto = userService.findById(id);
         return ResponseEntity.ok().body(dto);
     }
-
 }

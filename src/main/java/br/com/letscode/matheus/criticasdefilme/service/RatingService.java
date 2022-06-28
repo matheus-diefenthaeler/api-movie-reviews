@@ -29,13 +29,13 @@ public class RatingService {
     private UserRepository userRepository;
 
     @Autowired
-    private ReplyCommentRepository replyCommentRepository;
+    private UserService userService;
 
     @Transactional
     public RatingDto saveRating(RateRequest rateRequest) {
         Optional<User> user = userRepository.findById(rateRequest.getIdUser());
 
-        if (rateRequest.getComment() != null && !isAllowedToComment(user.get())) {
+        if (rateRequest.getComment() != null && !userService.isAllowedToComment(user.get())) {
             throw new PermissionDeniedException("User not allowed to comment");
         }
 
@@ -47,28 +47,9 @@ public class RatingService {
         entity.setImdbID(rateRequest.getImdbID());
         entity = ratingRepository.save(entity);
 
-        increaseUserScoreAndUpgrade(user.get());
+        userService.increaseUserScoreAndUpgrade(user.get());
 
         return new RatingDto(entity);
-    }
-
-    @Transactional
-    public ReplyCommentDto replyRating(ReplyCommentRequest replyRequest) {
-        Optional<User> user = userRepository.findById(replyRequest.getIdUser());
-        Optional<Rating> rating = ratingRepository.findById(replyRequest.getIdRating());
-
-        if (!isAllowedToComment(user.get())) {
-            throw new PermissionDeniedException("User not allowed to reply");
-        }
-        var entity = new ReplyComment();
-
-        entity.setReply(replyRequest.getReply());
-        entity.setUserID(replyRequest.getIdUser());
-        entity.setRating(rating.get());
-        entity = replyCommentRepository.save(entity);
-
-        increaseUserScoreAndUpgrade(user.get());
-        return new ReplyCommentDto(entity);
     }
 
     public List<RatingDto> findByimdbID(String id) {
@@ -77,30 +58,5 @@ public class RatingService {
 
     public List<RatingDto> getRatings(String id) {
         return ratingRepository.findByImdbID(id);
-    }
-
-    public void increaseUserScoreAndUpgrade(User user) {
-        increaseScore(user);
-        upgradeProfile(user);
-    }
-
-    public void increaseScore(User user) {
-        user.setScore(user.getScore() + 1);
-    }
-
-    public void upgradeProfile(User user) {
-        Long userScore = user.getScore();
-
-        if (userScore >= 20 && userScore < 100) {
-            user.setProfile(Profile.BASICO);
-        } else if (userScore >= 100 && userScore < 1000) {
-            user.setProfile(Profile.AVANCADO);
-        } else if (userScore >= 1000) {
-            user.setProfile(Profile.MODERADOR);
-        }
-    }
-
-    public boolean isAllowedToComment(User user) {
-        return (user != null && !user.getProfile().getDescription().equals("Leitor"));
     }
 }

@@ -34,5 +34,4 @@ public class Rating {
     private User user;
     private String imdbID;
 
-
 }

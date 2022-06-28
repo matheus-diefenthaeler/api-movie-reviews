@@ -1,7 +1,7 @@
 package br.com.letscode.matheus.criticasdefilme.controler;
 
 import br.com.letscode.matheus.criticasdefilme.request.ReplyCommentRequest;
-import br.com.letscode.matheus.criticasdefilme.service.RatingService;
+import br.com.letscode.matheus.criticasdefilme.service.ReplyCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,12 +14,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class ReplyCommentController {
 
     @Autowired
-    private RatingService ratingService;
-
+    private ReplyCommentService replyCommentService;
 
     @RequestMapping(value = "/reply", method = RequestMethod.POST)
     public ResponseEntity<Object> repplyCommentRate(@RequestBody ReplyCommentRequest ReplyCommentRequest) {
-        var dto = ratingService.replyRating(ReplyCommentRequest);
+        var dto = replyCommentService.replyRating(ReplyCommentRequest);
         var uri =
                 ServletUriComponentsBuilder.fromCurrentRequestUri()
                         .path("/reply")
@@ -27,5 +26,4 @@ public class ReplyCommentController {
                         .toUri();
         return ResponseEntity.created(uri).body(ReplyCommentRequest);
     }
-
 }
