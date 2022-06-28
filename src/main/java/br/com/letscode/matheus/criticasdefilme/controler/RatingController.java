@@ -1,5 +1,6 @@
 package br.com.letscode.matheus.criticasdefilme.controler;
 
+import br.com.letscode.matheus.criticasdefilme.request.DeleteRequest;
 import br.com.letscode.matheus.criticasdefilme.request.RateRequest;
 import br.com.letscode.matheus.criticasdefilme.service.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,11 @@ public class RatingController {
                         .buildAndExpand(dto.getId())
                         .toUri();
         return ResponseEntity.created(uri).body(rateRequest);
+    }
+
+    @RequestMapping(value = "/delete-comment", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteComment(@RequestBody DeleteRequest deleteRequest) {
+        ratingService.deleteComment(deleteRequest);
+        return ResponseEntity.noContent().build();
     }
 }

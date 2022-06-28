@@ -45,6 +45,10 @@ public class UserService {
         return (user != null && !user.getProfile().getDescription().equals("Leitor"));
     }
 
+    public boolean isAllowedToDelete(User user) {
+        return (user != null && user.getProfile().getDescription().equals("Moderador"));
+    }
+
     public void increaseUserScoreAndUpgrade(User user) {
         increaseScore(user);
         upgradeProfile(user);
@@ -65,5 +69,4 @@ public class UserService {
             user.setProfile(Profile.MODERADOR);
         }
     }
-
 }

@@ -1,6 +1,6 @@
 package br.com.letscode.matheus.criticasdefilme.dto;
 
-import br.com.letscode.matheus.criticasdefilme.entities.ReplyComment;
+import br.com.letscode.matheus.criticasdefilme.entities.CommentReply;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ public class ReplyCommentDto implements Serializable {
     private Long userID;
     private String reply;
 
-    public ReplyCommentDto(ReplyComment entity) {
+    public ReplyCommentDto(CommentReply entity) {
         this.id = entity.getId();
         this.userID = entity.getUserID();
         this.reply = entity.getReply();

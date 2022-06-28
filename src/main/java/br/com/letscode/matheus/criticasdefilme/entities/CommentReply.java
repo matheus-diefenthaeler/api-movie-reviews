@@ -20,7 +20,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tb_comment_reply")
-public class ReplyComment {
+public class CommentReply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reply_id")

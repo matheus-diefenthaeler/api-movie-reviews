@@ -1,16 +1,13 @@
 package br.com.letscode.matheus.criticasdefilme.service;
 
 import br.com.letscode.matheus.criticasdefilme.dto.RatingDto;
-import br.com.letscode.matheus.criticasdefilme.dto.ReplyCommentDto;
-import br.com.letscode.matheus.criticasdefilme.entities.ReplyComment;
-import br.com.letscode.matheus.criticasdefilme.entities.Profile;
 import br.com.letscode.matheus.criticasdefilme.entities.Rating;
 import br.com.letscode.matheus.criticasdefilme.entities.User;
 import br.com.letscode.matheus.criticasdefilme.repositories.RatingRepository;
 import br.com.letscode.matheus.criticasdefilme.repositories.ReplyCommentRepository;
 import br.com.letscode.matheus.criticasdefilme.repositories.UserRepository;
+import br.com.letscode.matheus.criticasdefilme.request.DeleteRequest;
 import br.com.letscode.matheus.criticasdefilme.request.RateRequest;
-import br.com.letscode.matheus.criticasdefilme.request.ReplyCommentRequest;
 import br.com.letscode.matheus.criticasdefilme.service.exceptions.PermissionDeniedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +27,12 @@ public class RatingService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ReplyCommentRepository replyCommentRepository;
+
+    @Autowired
+    private ReplyCommentService replyCommentService;
 
     @Transactional
     public RatingDto saveRating(RateRequest rateRequest) {
@@ -58,5 +61,21 @@ public class RatingService {
 
     public List<RatingDto> getRatings(String id) {
         return ratingRepository.findByImdbID(id);
+    }
+
+    @Transactional
+    public void deleteComment(DeleteRequest deleteRequest) {
+        Optional<Rating> rating = ratingRepository.findById(deleteRequest.getIdRate());
+        Optional<User> user = userRepository.findById(deleteRequest.getIdUser());
+
+        if (!userService.isAllowedToDelete(user.get())) {
+            throw new PermissionDeniedException("User not allowed to delete comments!");
+        }
+
+        rating.get().setComment(null);
+
+        replyCommentService.deleteReply(deleteRequest);
+
+        ratingRepository.save(rating.get());
     }
 }
