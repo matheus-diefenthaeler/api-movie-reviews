@@ -19,12 +19,14 @@ public class RatingDto implements Serializable {
     private Comment comment;
     private Long rate;
     private String imdbID;
+    private String message;
 
     public RatingDto(Rating entity) {
         this.id = entity.getId();
         this.comment = entity.getComment();
         this.rate = entity.getRate();
-        this.imdbID = getImdbID();
+        this.imdbID = entity.getImdbID();
+        this.message = entity.getMessage();
 
     }
 }

@@ -33,8 +33,10 @@ public class Rating {
 //@JoinColumn(name = "comment")
 //@JoinColumns({@JoinColumn(name = "comment_id"),@JoinColumn(name = "comment")})
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "message")
+    @JoinColumn(name = "comment_id")
     private Comment comment;
+    @JoinColumn(name = "")
+    private String message;
     private Long rate;
     @ManyToOne
     @JoinColumn(name = "user_id")

@@ -51,6 +51,7 @@ public class RatingService {
         comment.setUserID(rateRequest.getIdUser());
 
         entity.setComment(comment);
+        entity.setMessage(comment.getMessage());
         entity.setRate(rateRequest.getRate());
         entity.setUser(user.get());
         entity.setImdbID(rateRequest.getImdbID());
