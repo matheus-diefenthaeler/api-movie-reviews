@@ -1,9 +1,11 @@
 package br.com.letscode.matheus.criticasdefilme.service;
 
 import br.com.letscode.matheus.criticasdefilme.dto.ReplyCommentDto;
+import br.com.letscode.matheus.criticasdefilme.entities.Comment;
 import br.com.letscode.matheus.criticasdefilme.entities.Rating;
 import br.com.letscode.matheus.criticasdefilme.entities.CommentReply;
 import br.com.letscode.matheus.criticasdefilme.entities.User;
+import br.com.letscode.matheus.criticasdefilme.repositories.CommentRepository;
 import br.com.letscode.matheus.criticasdefilme.repositories.RatingRepository;
 import br.com.letscode.matheus.criticasdefilme.repositories.ReplyCommentRepository;
 import br.com.letscode.matheus.criticasdefilme.repositories.UserRepository;
@@ -32,10 +34,13 @@ public class ReplyCommentService {
     @Autowired
     private ReplyCommentRepository replyCommentRepository;
 
+    @Autowired
+    private CommentRepository CommentRepository;
+
     @Transactional
     public ReplyCommentDto replyRating(ReplyCommentRequest replyRequest) {
         Optional<User> user = userRepository.findById(replyRequest.getIdUser());
-        Optional<Rating> rating = ratingRepository.findById(replyRequest.getIdRating());
+        Optional<Comment> comment = CommentRepository.findById(replyRequest.getIdComment());
 
         if (!userService.isAllowedToComment(user.get())) {
             throw new PermissionDeniedException("User not allowed to reply");
@@ -44,7 +49,7 @@ public class ReplyCommentService {
 
         entity.setReply(replyRequest.getReply());
         entity.setUserID(replyRequest.getIdUser());
-        entity.setRating(rating.get());
+        entity.setComment(comment.get());
         entity = replyCommentRepository.save(entity);
 
         userService.increaseUserScoreAndUpgrade(user.get());

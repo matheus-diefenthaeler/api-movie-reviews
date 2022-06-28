@@ -1,5 +1,6 @@
 package br.com.letscode.matheus.criticasdefilme.dto;
 
+import br.com.letscode.matheus.criticasdefilme.entities.Comment;
 import br.com.letscode.matheus.criticasdefilme.entities.Rating;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.io.Serializable;
 public class RatingDto implements Serializable {
 
     private Long id;
-    private String comment;
+    private Comment comment;
     private Long rate;
     private String imdbID;
 

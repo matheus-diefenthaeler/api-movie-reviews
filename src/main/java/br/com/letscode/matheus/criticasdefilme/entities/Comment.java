@@ -12,24 +12,32 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tb_comment_reply")
-public class CommentReply {
+@Table(name = "tb_comment")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reply_id")
+    @Column(name = "comment_id")
     private Long id;
+
+    @OneToMany
+    @JoinColumn(name = "reply_id")
+    private List<CommentReply> replies;
+    private Long likes;
     private Long userID;
-    private String reply;
+    @Column(name = "message")
+    private String message;
 
     @ManyToOne
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
+    @JoinColumn(name = "rating_id")
+    private Rating rating;
 
 }

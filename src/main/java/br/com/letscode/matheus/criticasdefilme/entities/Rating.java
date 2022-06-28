@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +28,13 @@ public class Rating {
     @Column(name = "rating_id")
     private Long id;
 
-    private String comment;
+    //    @OneToMany
+//    @JoinColumn(name = "comment_id")
+//@JoinColumn(name = "comment")
+//@JoinColumns({@JoinColumn(name = "comment_id"),@JoinColumn(name = "comment")})
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "message")
+    private Comment comment;
     private Long rate;
     @ManyToOne
     @JoinColumn(name = "user_id")

@@ -8,7 +8,7 @@ import lombok.Setter;
 public class RateRequest {
 
     private Long idUser;
-    private String comment;
+    private String message;
     private Long rate;
     private String imdbID;
 

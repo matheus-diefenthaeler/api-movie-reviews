@@ -1,6 +1,7 @@
 package br.com.letscode.matheus.criticasdefilme.service;
 
 import br.com.letscode.matheus.criticasdefilme.dto.RatingDto;
+import br.com.letscode.matheus.criticasdefilme.entities.Comment;
 import br.com.letscode.matheus.criticasdefilme.entities.Rating;
 import br.com.letscode.matheus.criticasdefilme.entities.User;
 import br.com.letscode.matheus.criticasdefilme.repositories.RatingRepository;
@@ -38,13 +39,18 @@ public class RatingService {
     public RatingDto saveRating(RateRequest rateRequest) {
         Optional<User> user = userRepository.findById(rateRequest.getIdUser());
 
-        if (rateRequest.getComment() != null && !userService.isAllowedToComment(user.get())) {
+        if (rateRequest.getMessage() != null && !userService.isAllowedToComment(user.get())) {
             throw new PermissionDeniedException("User not allowed to comment");
         }
 
         var entity = new Rating();
+        var comment = new Comment();
 
-        entity.setComment(rateRequest.getComment());
+        comment.setMessage(rateRequest.getMessage());
+        comment.setRating(entity);
+        comment.setUserID(rateRequest.getIdUser());
+
+        entity.setComment(comment);
         entity.setRate(rateRequest.getRate());
         entity.setUser(user.get());
         entity.setImdbID(rateRequest.getImdbID());
