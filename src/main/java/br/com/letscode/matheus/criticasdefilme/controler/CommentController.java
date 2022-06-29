@@ -2,6 +2,7 @@ package br.com.letscode.matheus.criticasdefilme.controler;
 
 import br.com.letscode.matheus.criticasdefilme.request.CommentRequest;
 import br.com.letscode.matheus.criticasdefilme.request.DisLikeRequest;
+import br.com.letscode.matheus.criticasdefilme.request.DuplicateRequest;
 import br.com.letscode.matheus.criticasdefilme.request.LikeRequest;
 import br.com.letscode.matheus.criticasdefilme.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,12 @@ public class CommentController {
         commentService.disLikeComment(disLikeRequest);
 
         return ResponseEntity.ok().body(disLikeRequest);
+    }
+
+    @RequestMapping(value = "/duplicate", method = RequestMethod.POST)
+    public ResponseEntity<Object> commentDuplicated(@RequestBody DuplicateRequest duplicateRequest) {
+        commentService.setCommentDuplicated(duplicateRequest);
+
+        return ResponseEntity.ok().body(duplicateRequest);
     }
 }

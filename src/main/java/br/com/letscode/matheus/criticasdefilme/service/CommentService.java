@@ -9,6 +9,7 @@ import br.com.letscode.matheus.criticasdefilme.repositories.RatingRepository;
 import br.com.letscode.matheus.criticasdefilme.repositories.UserRepository;
 import br.com.letscode.matheus.criticasdefilme.request.CommentRequest;
 import br.com.letscode.matheus.criticasdefilme.request.DisLikeRequest;
+import br.com.letscode.matheus.criticasdefilme.request.DuplicateRequest;
 import br.com.letscode.matheus.criticasdefilme.request.LikeRequest;
 import br.com.letscode.matheus.criticasdefilme.service.exceptions.PermissionDeniedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,15 @@ public class CommentService {
         Optional<Comment> comment = commentRepository.findById(disLikeRequest.getIdComment());
 
         increaseDisLike(disLikeRequest, comment.get());
+        commentRepository.save(comment.get());
+    }
+
+    @Transactional
+    public void setCommentDuplicated(DuplicateRequest duplicateRequest) {
+        Optional<Comment> comment = commentRepository.findById(duplicateRequest.getIdComment());
+
+        comment.get().setRepeated(duplicateRequest.getDuplicated());
+
         commentRepository.save(comment.get());
     }
 
