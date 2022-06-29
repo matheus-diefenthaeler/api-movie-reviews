@@ -34,7 +34,7 @@ public class Comment {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<CommentReply> replies;
 
-    private Long likes;
+    private Long likes = 0L;
     private Long userID;
 
     @Column(name = "message")
