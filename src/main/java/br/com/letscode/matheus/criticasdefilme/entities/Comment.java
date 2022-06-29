@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,13 +31,16 @@ public class Comment {
     @Column(name = "comment_id")
     private Long id;
 
-    @OneToMany
-    @JoinColumn(name = "reply_id")
+    @OneToMany(mappedBy = "comment")
     private List<CommentReply> replies;
+
     private Long likes;
     private Long userID;
+
     @Column(name = "message")
     private String message;
+
+    private Long idCitedComment;
 
     @ManyToOne
     @JoinColumn(name = "rating_id")

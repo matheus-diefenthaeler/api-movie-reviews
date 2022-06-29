@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ import java.io.Serializable;
 public class RatingDto implements Serializable {
 
     private Long id;
-    private Comment comment;
+    private List<Comment> comment;
     private Long rate;
     private String imdbID;
     private String message;

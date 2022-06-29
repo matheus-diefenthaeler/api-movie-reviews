@@ -5,6 +5,7 @@ import br.com.letscode.matheus.criticasdefilme.request.RateRequest;
 import br.com.letscode.matheus.criticasdefilme.service.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,8 +30,20 @@ public class RatingController {
     }
 
     @RequestMapping(value = "/delete-comment", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteComment(@RequestBody DeleteRequest deleteRequest) {
-        ratingService.deleteComment(deleteRequest);
+    public ResponseEntity<Object> deleteRating(@RequestBody DeleteRequest deleteRequest) {
+        ratingService.deleteById(deleteRequest.getIdRate());
         return ResponseEntity.noContent().build();
     }
+
+//    @RequestMapping(value = "/cite/{id}", method = RequestMethod.POST)
+//    public ResponseEntity<Object> citeComment(@PathVariable Long idComment) {
+//        var dto = ratingService.citeComment(idComment);
+//        var uri =
+//                ServletUriComponentsBuilder.fromCurrentRequestUri()
+//                        .path("/cite/{id}")
+//                        .buildAndExpand(dto.getId())
+//                        .toUri();
+//        return ResponseEntity.created(uri).body(rateRequest);
+//    }
+
 }

@@ -44,14 +44,8 @@ public class RatingService {
         }
 
         var entity = new Rating();
-        var comment = new Comment();
 
-        comment.setMessage(rateRequest.getMessage());
-        comment.setRating(entity);
-        comment.setUserID(rateRequest.getIdUser());
-
-        entity.setComment(comment);
-        entity.setMessage(comment.getMessage());
+        entity.setMessage(rateRequest.getMessage());
         entity.setRate(rateRequest.getRate());
         entity.setUser(user.get());
         entity.setImdbID(rateRequest.getImdbID());
@@ -85,4 +79,13 @@ public class RatingService {
 
         ratingRepository.save(rating.get());
     }
+
+    public void deleteById(Long idRate) {
+        ratingRepository.deleteById(idRate);
+    }
+
+//    public void citeComment(Long idComment) {
+//
+//
+//    }
 }

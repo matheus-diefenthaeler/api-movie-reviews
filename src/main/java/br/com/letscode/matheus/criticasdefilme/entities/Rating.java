@@ -13,7 +13,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,19 +30,18 @@ public class Rating {
     @Column(name = "rating_id")
     private Long id;
 
-    //    @OneToMany
-//    @JoinColumn(name = "comment_id")
-//@JoinColumn(name = "comment")
-//@JoinColumns({@JoinColumn(name = "comment_id"),@JoinColumn(name = "comment")})
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
-    @JoinColumn(name = "")
+    @OneToMany(mappedBy = "rating")
+    private List<Comment> comment;
+
+    @Column(name = "message")
     private String message;
+
     private Long rate;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     private String imdbID;
 
 }
