@@ -31,7 +31,7 @@ public class Comment {
     @Column(name = "comment_id")
     private Long id;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<CommentReply> replies;
 
     private Long likes;

@@ -30,7 +30,7 @@ public class Rating {
     @Column(name = "rating_id")
     private Long id;
 
-    @OneToMany(mappedBy = "rating")
+    @OneToMany(mappedBy = "rating", cascade = CascadeType.ALL)
     private List<Comment> comment;
 
     @Column(name = "message")
