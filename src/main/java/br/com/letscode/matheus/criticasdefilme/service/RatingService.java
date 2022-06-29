@@ -39,10 +39,6 @@ public class RatingService {
     public RatingDto saveRating(RateRequest rateRequest) {
         Optional<User> user = userRepository.findById(rateRequest.getIdUser());
 
-        if (rateRequest.getMessage() != null && !userService.isAllowedToComment(user.get())) {
-            throw new PermissionDeniedException("User not allowed to comment");
-        }
-
         var entity = new Rating();
 
         entity.setMessage(rateRequest.getMessage());

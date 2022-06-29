@@ -42,11 +42,11 @@ public class UserService {
 
 
     public boolean isAllowedToComment(User user) {
-        return (user != null && !user.getProfile().getDescription().equals("Leitor"));
+        return (user != null && !user.getProfile().getDescription().equals(Profile.LEITOR.getDescription()));
     }
 
     public boolean isAllowedToDelete(User user) {
-        return (user != null && user.getProfile().getDescription().equals("Moderador"));
+        return (user != null && user.getProfile().getDescription().equals(Profile.MODERADOR.getDescription()));
     }
 
     public void increaseUserScoreAndUpgrade(User user) {
