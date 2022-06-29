@@ -1,6 +1,7 @@
 package br.com.letscode.matheus.criticasdefilme.controler;
 
 import br.com.letscode.matheus.criticasdefilme.request.CommentRequest;
+import br.com.letscode.matheus.criticasdefilme.request.DisLikeRequest;
 import br.com.letscode.matheus.criticasdefilme.request.LikeRequest;
 import br.com.letscode.matheus.criticasdefilme.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,12 @@ public class CommentController {
         commentService.likeComment(likeRequest);
 
         return ResponseEntity.ok().body(likeRequest);
+    }
+
+    @RequestMapping(value = "/dislike", method = RequestMethod.POST)
+    public ResponseEntity<Object> disLikeComment(@RequestBody DisLikeRequest disLikeRequest) {
+        commentService.disLikeComment(disLikeRequest);
+
+        return ResponseEntity.ok().body(disLikeRequest);
     }
 }

@@ -35,6 +35,8 @@ public class Comment {
     private List<CommentReply> replies;
 
     private Long likes = 0L;
+    private Long disLikes = 0L;
+    private Boolean repeated = false;
     private Long userID;
 
     @Column(name = "message")
