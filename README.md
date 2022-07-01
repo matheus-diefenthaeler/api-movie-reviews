@@ -31,8 +31,12 @@ Para que um usuário cadastrado possa realizar as operações no seu sistema, el
 https://github.com/matheus-diefenthaeler/authorization-token
 - Para acessar o console do H2 da api authorization-token, utilize o caminho: http://localhost:8081/h2-console e, no campo `JDBC URL:` informe o valor `jdbc:h2:tcp://localhost:9090/./testdb`
 # Testando a aplicacao
+## Observações:
+- Execute a primeiro a api-movie-reviews e somente após execute api authorization-token!
 
-- 1º Passo é preciso realizar o cadastro do usuario 
+## Passo a passo dos testes utilizando a collection disponibilizada no inicio do readme.
+
+- 1º Passo realize o cadastro do usuario, através da subpasta `Register` na request `Register user`, passando como body o exemplo abaixo
   * Endpoint `POST localhost:8080/registration` 
 ```JSON
 {
@@ -51,3 +55,15 @@ https://github.com/matheus-diefenthaeler/authorization-token
     "profile": "LEITOR"
 }
 ```
+
+- 2º Passo efetue o login do usuario cadastrado, através da subpasta `Authorization - Token` na request `Authenticate`, passando como `key` de nome `user` o email cadastrado, no exemplo acima foi utilizado `matheus@teste.com` e na segunda `key` de nome `password` informe a senha cadastrada `123123`
+  * Endpoint `POST http://localhost:8081/authenticate`.
+    - Resultado esperado: Status: `200 OK`
+- Será printado um Token como String que deverá ser passado no `Header` de key `Authorization` em todas as demais requisiçoes, exemplo de um token abaixo:
+  
+Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibW9kZXJhZG9yQHRlc3RlLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2NTY3MDE0MDQsImV4cCI6MTY1NjcwMjAwNH0.sS4y3q-8hkK9yW7L7jGHk-eD2UkMCMtD2orMZcXomPzq3qlKRlVASIMiUPFvmg-s2pZ-1omAEFvjOGLVR-jMjw
+  
+![image](https://user-images.githubusercontent.com/76569275/176964349-2b6f3d45-9e95-45b3-8ff6-338c319255b1.png)
+
+ 
+  
