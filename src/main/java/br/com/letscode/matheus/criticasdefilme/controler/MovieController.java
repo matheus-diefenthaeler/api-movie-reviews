@@ -1,5 +1,6 @@
 package br.com.letscode.matheus.criticasdefilme.controler;
 
+import br.com.letscode.matheus.criticasdefilme.controler.exceptions.MovieNotFoundException;
 import br.com.letscode.matheus.criticasdefilme.response.MovieResponse;
 import br.com.letscode.matheus.criticasdefilme.service.RatingService;
 import com.google.gson.Gson;
@@ -32,6 +33,10 @@ public class MovieController {
         Gson gson = new Gson();
         String s = gson.toJson(obj);
         MovieResponse movieResponse = gson.fromJson(s, MovieResponse.class);
+
+        if (movieResponse.getImdbID() == null) {
+            throw new MovieNotFoundException("Movie not found for the given imdbID!");
+        }
         movieResponse.setMovieRating(ratingService.getRatings(id));
 
         return ResponseEntity.ok().body(movieResponse);

@@ -55,4 +55,17 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(error);
     }
 
+    @ExceptionHandler(MovieNotFoundException.class)
+    public ResponseEntity<StandardError> movieNotFound(
+            MovieNotFoundException e, HttpServletRequest request) {
+        status = HttpStatus.NOT_FOUND;
+        var error = new StandardError();
+        error.setTimestamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Movie not found!");
+        error.setMessage(e.getMessage());
+        error.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+
 }
