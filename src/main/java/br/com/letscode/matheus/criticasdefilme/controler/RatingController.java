@@ -28,21 +28,9 @@ public class RatingController {
         return ResponseEntity.created(uri).body(rateRequest);
     }
 
-    @RequestMapping(value = "/delete-comment", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete-rating", method = RequestMethod.DELETE)
     public ResponseEntity<Object> deleteRating(@RequestBody DeleteRequest deleteRequest) {
-        ratingService.deleteById(deleteRequest.getIdRate());
+        ratingService.deleteRating(deleteRequest);
         return ResponseEntity.noContent().build();
     }
-
-//    @RequestMapping(value = "/cite/{id}", method = RequestMethod.POST)
-//    public ResponseEntity<Object> citeComment(@PathVariable Long idComment) {
-//        var dto = ratingService.citeComment(idComment);
-//        var uri =
-//                ServletUriComponentsBuilder.fromCurrentRequestUri()
-//                        .path("/cite/{id}")
-//                        .buildAndExpand(dto.getId())
-//                        .toUri();
-//        return ResponseEntity.created(uri).body(rateRequest);
-//    }
-
 }
