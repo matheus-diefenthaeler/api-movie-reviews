@@ -36,7 +36,7 @@ https://github.com/matheus-diefenthaeler/authorization-token
 
 ## Passo a passo dos testes utilizando a collection disponibilizada no inicio do readme.
 
-- 1º Passo realize o cadastro do usuario, através da subpasta `Register` na request `Register user`, passando como body o exemplo abaixo
+- 1º Passo `[CADASTRO USUARIO]` realize o cadastro do usuario, através da subpasta `Register` na request `Register user`, passando como body o exemplo abaixo
   * Endpoint `POST localhost:8080/registration` 
 ```JSON
 {
@@ -45,7 +45,7 @@ https://github.com/matheus-diefenthaeler/authorization-token
 }
 ```
 
-- Resultado esperado: Status: `201 CREATED`
+- Resultado esperado: Status: `201 CREATED` a requisiçao deverá ser rejeitada caso seja informado algum campo incorreto.
 ```JSON
 {
     "id": 1,
@@ -56,7 +56,7 @@ https://github.com/matheus-diefenthaeler/authorization-token
 }
 ```
 
-- 2º Passo efetue o login do usuario cadastrado, através da subpasta `Authorization - Token` na request `Authenticate`, passando como `key` de nome `user` o email cadastrado, no exemplo acima foi utilizado `matheus@teste.com` e na segunda `key` de nome `password` informe a senha cadastrada `123123`
+- 2º Passo `[LOGIN]` efetue o login do usuario cadastrado, através da subpasta `Authorization - Token` na request `Authenticate`, passando como `key` de nome `user` o email cadastrado, no exemplo acima foi utilizado `matheus@teste.com` e na segunda `key` de nome `password` informe a senha cadastrada `123123`
   * Endpoint `POST http://localhost:8081/authenticate`.
     - Resultado esperado: Status: `200 OK`
 - Será printado um Token como String que deverá ser passado no `Header` de key `Authorization` em todas as demais requisiçoes, exemplo de um token abaixo:
@@ -65,7 +65,7 @@ Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibW9kZXJhZG9yQHRl
   
 ![image](https://user-images.githubusercontent.com/76569275/176964349-2b6f3d45-9e95-45b3-8ff6-338c319255b1.png)
 
- - 3º Passo, com usuario cadastrado podemos agora enviar uma avaliaçao, para isso passe o token gerado anteriormente, no header `Authorization` na request `Rate Movie by imdbID` da pasta `Movie`.
+ - 3º Passo `[AVALIANDO UM FILME]`, com usuario cadastrado podemos agora enviar uma avaliaçao, para isso passe o token gerado anteriormente, no header `Authorization` na request `Rate Movie by imdbID` da pasta `Movie`.
  ![image](https://user-images.githubusercontent.com/76569275/176965056-0000949c-0a6c-4d37-81d0-1c10fac9da32.png)
 
  
@@ -79,7 +79,7 @@ Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibW9kZXJhZG9yQHRl
     "imdbID": "tt0120338"
 }
 ```
-- Resultado esperado: Status: `201 CREATED`
+- Resultado esperado: Status: `201 CREATED` a requisiçao deverá ser rejeitada caso seja informado algum campo incorreto.
   
 ```JSON
 {
@@ -90,7 +90,7 @@ Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibW9kZXJhZG9yQHRl
 }
 ```
 
- - 4º Passo, com uma avaliaçao no sistema, um usuario de perfil acima de `LEITOR` é possivel fazer comentarios, para isso informe tambem o mesmo token gerado anteriormente, no header `Authorization` na request `Comment rate by idRating` da pasta `Comment`.
+ - 4º Passo `[COMENTANDO UMA AVALIÇÃO]`, com uma avaliaçao no sistema, um usuario de perfil acima de `LEITOR` é possivel fazer comentarios, para isso informe tambem o mesmo token gerado anteriormente, no header `Authorization` na request `Comment rate by idRating` da pasta `Comment`.
  ![image](https://user-images.githubusercontent.com/76569275/176965757-a7355b70-c13f-4687-8c24-b9003a77764e.png)
  
  No body informe id da avaliçao `idRating`, uma mesagem e o id do usuario `idUser`
@@ -104,12 +104,36 @@ Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibW9kZXJhZG9yQHRl
 }
 ```
 
-- Resultado esperado: Status: `201 CREATED`
+- Resultado esperado: Status: `201 CREATED` a requisiçao deverá ser rejeitada caso seja informado algum campo incorreto.
 
 ```JSON 
  {
     "idRating": 1,
     "message": "Filme muito bom!",
+    "idUser": 1
+}
+```
+ - 5º Passo `[RESPONDENDO UM COMENTARIO]`, com um comentario feito no sistema, um usuario de perfil acima de `LEITOR` é possivel responder aos comentarios, para isso informe tambem o mesmo token gerado anteriormente, no header `Authorization` na request `Reply comment by idComment` da pasta `Comment`.
+ ![image](https://user-images.githubusercontent.com/76569275/176966669-94a17057-24df-4930-a27b-db7c446f0159.png)
+ 
+  No body informe id da avaliçao `idRating`, o id do comentario `idComment` uma mesagem e o id do usuario `idUser`
+ * Endpoint `POST localhost:8080/reply` 
+```JSON 
+ {
+    "idRating": 1,
+    "idComment": 1,
+    "reply": "respondendo ao comentario",
+    "idUser": 1
+}
+```
+
+- Resultado esperado: Status: `201 CREATED` a requisiçao deverá ser rejeitada caso seja informado algum campo incorreto.
+
+```JSON 
+ {
+    "idRating": 1,
+    "idComment": 1,
+    "reply": "respondendo ao comentario",
     "idUser": 1
 }
 ```
