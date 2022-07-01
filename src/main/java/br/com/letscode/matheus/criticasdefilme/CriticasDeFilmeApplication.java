@@ -1,19 +1,21 @@
 package br.com.letscode.matheus.criticasdefilme;
 
+import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.context.annotation.Bean;
+
+import java.sql.SQLException;
 
 @SpringBootApplication
 public class CriticasDeFilmeApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CriticasDeFilmeApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CriticasDeFilmeApplication.class, args);
+    }
 
-
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public Server inMemoryH2DatabaseServer() throws SQLException {
+        return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9090");
+    }
 }
