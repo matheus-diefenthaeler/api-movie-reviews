@@ -41,7 +41,7 @@ public class ReplyCommentService {
     private CommentRepository CommentRepository;
 
     @Transactional
-    public ReplyCommentDto replyRating(ReplyCommentRequest replyRequest) {
+    public ReplyCommentDto replyComment(ReplyCommentRequest replyRequest) {
         Optional<Rating> rating = ratingRepository.findById(replyRequest.getIdRating());
         Optional<User> user = userRepository.findById(replyRequest.getIdUser());
         Optional<Comment> comment = CommentRepository.findById(replyRequest.getIdComment());

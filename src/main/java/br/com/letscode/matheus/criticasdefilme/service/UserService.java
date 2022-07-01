@@ -45,6 +45,10 @@ public class UserService {
         return (user != null && !user.getProfile().getDescription().equals(Profile.LEITOR.getDescription()));
     }
 
+    public boolean isAllowedToReply(User user) {
+        return (user != null && !user.getProfile().getDescription().equals(Profile.LEITOR.getDescription()));
+    }
+
     public boolean isAllowedToDelete(User user) {
         return (user != null && user.getProfile().getDescription().equals(Profile.MODERADOR.getDescription()));
     }

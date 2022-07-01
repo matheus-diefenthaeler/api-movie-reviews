@@ -18,7 +18,7 @@ public class ReplyCommentController {
 
     @RequestMapping(value = "/reply", method = RequestMethod.POST)
     public ResponseEntity<Object> repplyCommentRate(@RequestBody ReplyCommentRequest ReplyCommentRequest) {
-        var dto = replyCommentService.replyRating(ReplyCommentRequest);
+        var dto = replyCommentService.replyComment(ReplyCommentRequest);
         var uri =
                 ServletUriComponentsBuilder.fromCurrentRequestUri()
                         .path("/reply")
