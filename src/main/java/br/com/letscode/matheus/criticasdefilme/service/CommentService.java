@@ -12,6 +12,8 @@ import br.com.letscode.matheus.criticasdefilme.request.DisLikeRequest;
 import br.com.letscode.matheus.criticasdefilme.request.DuplicateRequest;
 import br.com.letscode.matheus.criticasdefilme.request.LikeRequest;
 import br.com.letscode.matheus.criticasdefilme.service.exceptions.PermissionDeniedException;
+import br.com.letscode.matheus.criticasdefilme.service.exceptions.RatingNotFoundException;
+import br.com.letscode.matheus.criticasdefilme.service.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,8 @@ public class CommentService {
     public CommentDto comment(CommentRequest commentRequest) {
         Optional<User> user = userRepository.findById(commentRequest.getIdUser());
         Optional<Rating> rating = ratingRepository.findById(commentRequest.getIdRating());
+        user.orElseThrow(()-> new UserNotFoundException("User not found!"));
+        rating.orElseThrow(()-> new RatingNotFoundException("Rating not found!"));
 
         if (!userService.isAllowedToComment(user.get())) {
             throw new PermissionDeniedException("User not allowed to Comment");
