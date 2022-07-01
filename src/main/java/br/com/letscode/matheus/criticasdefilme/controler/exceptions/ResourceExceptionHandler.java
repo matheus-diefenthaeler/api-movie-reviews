@@ -1,5 +1,6 @@
 package br.com.letscode.matheus.criticasdefilme.controler.exceptions;
 
+import br.com.letscode.matheus.criticasdefilme.service.exceptions.CommentNotFoundException;
 import br.com.letscode.matheus.criticasdefilme.service.exceptions.PermissionDeniedException;
 import br.com.letscode.matheus.criticasdefilme.service.exceptions.RatingNotFoundException;
 import br.com.letscode.matheus.criticasdefilme.service.exceptions.UserNotFoundException;
@@ -50,6 +51,19 @@ public class ResourceExceptionHandler {
         error.setTimestamp(Instant.now());
         error.setStatus(status.value());
         error.setError("Rating not found!");
+        error.setMessage(e.getMessage());
+        error.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<StandardError> commentNotFound(
+            CommentNotFoundException e, HttpServletRequest request) {
+        status = HttpStatus.NOT_FOUND;
+        var error = new StandardError();
+        error.setTimestamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Comment not found!");
         error.setMessage(e.getMessage());
         error.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(error);

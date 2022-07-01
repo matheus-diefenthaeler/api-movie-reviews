@@ -11,7 +11,10 @@ import br.com.letscode.matheus.criticasdefilme.repositories.ReplyCommentReposito
 import br.com.letscode.matheus.criticasdefilme.repositories.UserRepository;
 import br.com.letscode.matheus.criticasdefilme.request.DeleteRequest;
 import br.com.letscode.matheus.criticasdefilme.request.ReplyCommentRequest;
+import br.com.letscode.matheus.criticasdefilme.service.exceptions.CommentNotFoundException;
 import br.com.letscode.matheus.criticasdefilme.service.exceptions.PermissionDeniedException;
+import br.com.letscode.matheus.criticasdefilme.service.exceptions.RatingNotFoundException;
+import br.com.letscode.matheus.criticasdefilme.service.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +42,12 @@ public class ReplyCommentService {
 
     @Transactional
     public ReplyCommentDto replyRating(ReplyCommentRequest replyRequest) {
+        Optional<Rating> rating = ratingRepository.findById(replyRequest.getIdRating());
         Optional<User> user = userRepository.findById(replyRequest.getIdUser());
         Optional<Comment> comment = CommentRepository.findById(replyRequest.getIdComment());
+        rating.orElseThrow(()-> new RatingNotFoundException("Rating not found!"));
+        user.orElseThrow(()-> new UserNotFoundException("User not found!"));
+        comment.orElseThrow(()-> new CommentNotFoundException("Comment not found!"));
 
         if (!userService.isAllowedToComment(user.get())) {
             throw new PermissionDeniedException("User not allowed to reply");
@@ -50,6 +57,7 @@ public class ReplyCommentService {
         entity.setReply(replyRequest.getReply());
         entity.setUserID(replyRequest.getIdUser());
         entity.setComment(comment.get());
+        entity.setRating(rating.get());
         entity = replyCommentRepository.save(entity);
 
         userService.increaseUserScoreAndUpgrade(user.get());

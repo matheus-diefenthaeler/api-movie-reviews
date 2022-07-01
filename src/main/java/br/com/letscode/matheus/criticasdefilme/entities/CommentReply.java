@@ -35,4 +35,8 @@ public class CommentReply {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
+    @ManyToOne
+    @JoinColumn(name = "rating_id")
+    private Rating rating;
+
 }
