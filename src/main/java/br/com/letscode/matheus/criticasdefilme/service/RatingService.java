@@ -1,7 +1,7 @@
 package br.com.letscode.matheus.criticasdefilme.service;
 
+import br.com.letscode.matheus.criticasdefilme.controler.exceptions.MovieNotFoundException;
 import br.com.letscode.matheus.criticasdefilme.dto.RatingDto;
-import br.com.letscode.matheus.criticasdefilme.entities.Comment;
 import br.com.letscode.matheus.criticasdefilme.entities.Rating;
 import br.com.letscode.matheus.criticasdefilme.entities.User;
 import br.com.letscode.matheus.criticasdefilme.repositories.RatingRepository;
@@ -37,10 +37,17 @@ public class RatingService {
     @Autowired
     private ReplyCommentService replyCommentService;
 
+    @Autowired
+    private MovieService movieService;
+
     @Transactional
     public RatingDto saveRating(RateRequest rateRequest) {
         Optional<User> user = userRepository.findById(rateRequest.getIdUser());
         user.orElseThrow(()-> new UserNotFoundException("User not found!"));
+
+        if(!movieService.existsMovieById(rateRequest.getImdbID())){
+            throw new MovieNotFoundException("Movie not found for the given imdbID!");
+        }
 
         var entity = new Rating();
 
