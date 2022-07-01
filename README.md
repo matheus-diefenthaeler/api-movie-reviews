@@ -1,5 +1,5 @@
 # CHALLENGE - Sistema de críticas de filmes
-## Informações importantes para utilizaçao da api
+## Informações importantes para utilização da api
 - Para acessar o console do H2 da api-movie-reviews, utilize o caminho: http://localhost:8080/h2-console e, no campo `JDBC URL:` informe o valor `jdbc:h2:./testdb`
 - Utilize a colection e o enviroment disponibilizados no link: https://drive.google.com/file/d/1h4-ryIfz_iMl_haKYCTA3CqhC6aCWsjJ/view?usp=sharing para fazer as requisiçoes.
 
@@ -40,7 +40,7 @@ Para que um usuário cadastrado possa realizar as operações no seu sistema, el
  - Interface JPA
  - Banco H2
 
-# Testando a aplicacao
+# Testando a aplicação
 
 ## Passo a passo dos testes utilizando a collection disponibilizada no inicio do readme.
 
@@ -61,6 +61,14 @@ Para que um usuário cadastrado possa realizar as operações no seu sistema, el
     "password": "123123",
     "score": 0,
     "profile": "LEITOR"
+}
+```
+- Obs: A titulo de teste, outros tipos de Perfil podem ser cadastrados, basta informar no body um perfil de nivel maior, exemplo:
+```JSON
+{
+    "email": "matheus@teste.com",
+    "password": "123123",
+    "profile": "MODERADOR"
 }
 ```
 
