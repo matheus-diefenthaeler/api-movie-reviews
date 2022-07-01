@@ -32,7 +32,7 @@ Para que um usuário cadastrado possa realizar as operações no seu sistema, el
 
 - Caso o login e senha estiverem errado, sua API de autenticação deverá salvar um cache com uma tentativa de login e a cada nova tentativa de login errada esse cache deve ser atualizado.
 
-## API movie-reviews (Parte 1)
+## API movie-reviews
 
 - Tecnologias utilizadas:
  - Java 11
