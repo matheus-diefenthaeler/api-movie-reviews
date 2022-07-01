@@ -65,5 +65,51 @@ Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibW9kZXJhZG9yQHRl
   
 ![image](https://user-images.githubusercontent.com/76569275/176964349-2b6f3d45-9e95-45b3-8ff6-338c319255b1.png)
 
+ - 3º Passo, com usuario cadastrado podemos agora enviar uma avaliaçao, para isso passe o token gerado anteriormente, no header `Authorization` na request `Rate Movie by imdbID` da pasta `Movie`.
+ ![image](https://user-images.githubusercontent.com/76569275/176965056-0000949c-0a6c-4d37-81d0-1c10fac9da32.png)
+
  
+ No body informe o id do usuario, a mensagem de avaliação, uma nota e o ID de um filme que pode ser buscado na API (https://www.omdbapi.com/), abaixo exemplo:
+ * Endpoint `POST localhost:8080/movie/rate` 
+  ```JSON
+{
+    "idUser": 1,
+    "message": "Gostei do filme",
+    "rate": 10,
+    "imdbID": "tt0120338"
+}
+```
+- Resultado esperado: Status: `201 CREATED`
   
+```JSON
+{
+    "idUser": 1,
+    "message": "Gostei do filme",
+    "rate": 10,
+    "imdbID": "tt0120338"
+}
+```
+
+ - 4º Passo, com uma avaliaçao no sistema, um usuario de perfil acima de `LEITOR` é possivel fazer comentarios, para isso informe tambem o mesmo token gerado anteriormente, no header `Authorization` na request `Comment rate by idRating` da pasta `Comment`.
+ ![image](https://user-images.githubusercontent.com/76569275/176965757-a7355b70-c13f-4687-8c24-b9003a77764e.png)
+ 
+ No body informe id da avaliçao `idRating`, uma mesagem e o id do usuario `idUser`
+ * Endpoint `POST localhost:8080/comment` 
+
+```JSON 
+ {
+    "idRating": 1,
+    "message": "Filme muito bom!",
+    "idUser": 1
+}
+```
+
+- Resultado esperado: Status: `201 CREATED`
+
+```JSON 
+ {
+    "idRating": 1,
+    "message": "Filme muito bom!",
+    "idUser": 1
+}
+```
