@@ -3,6 +3,7 @@ package br.com.letscode.matheus.criticasdefilme.controler;
 import br.com.letscode.matheus.criticasdefilme.dto.UserDto;
 import br.com.letscode.matheus.criticasdefilme.service.RatingService;
 import br.com.letscode.matheus.criticasdefilme.service.UserService;
+import br.com.letscode.matheus.criticasdefilme.service.exceptions.UserAlreadyRegisteredException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,9 @@ public class UserController {
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ResponseEntity<UserDto> saveUser(@RequestBody UserDto dto) {
+        if(userService.isPresent(dto.getEmail())){
+            throw new UserAlreadyRegisteredException("Email already registered, choose another one!");
+        }
         dto = userService.saveUser(dto);
         var uri =
                 ServletUriComponentsBuilder.fromCurrentRequestUri()

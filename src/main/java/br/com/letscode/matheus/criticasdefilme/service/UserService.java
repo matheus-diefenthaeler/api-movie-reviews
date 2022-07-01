@@ -35,6 +35,18 @@ public class UserService {
        return new UserDto(entity);
     }
 
+    @Transactional(readOnly = true)
+    public UserDto findByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        var entity = user.orElseThrow(()-> new UserNotFoundException("User not found!"));
+        return new UserDto(entity);
+    }
+
+    public Boolean isPresent(String email){
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.isPresent();
+    }
+
     public void verifyUser(String email, String pwd) {
         Optional<User> user = userRepository.findByEmailAndPassword(email,pwd);
         var entity = user.orElseThrow(()-> new UserNotFoundException("User not found!"));
@@ -42,10 +54,6 @@ public class UserService {
 
 
     public boolean isAllowedToComment(User user) {
-        return (user != null && !user.getProfile().getDescription().equals(Profile.LEITOR.getDescription()));
-    }
-
-    public boolean isAllowedToReply(User user) {
         return (user != null && !user.getProfile().getDescription().equals(Profile.LEITOR.getDescription()));
     }
 
