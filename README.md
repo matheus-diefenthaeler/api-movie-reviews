@@ -1,4 +1,14 @@
 # CHALLENGE - Sistema de críticas de filmes
+## Informações importantes para utilizaçao da api
+- Para acessar o console do H2 da api-movie-reviews, utilize o caminho: http://localhost:8080/h2-console e, no campo `JDBC URL:` informe o valor `jdbc:h2:./testdb`
+- Utilize a colection e o enviroment disponibilizados no link: https://drive.google.com/file/d/1h4-ryIfz_iMl_haKYCTA3CqhC6aCWsjJ/view?usp=sharing para fazer as requisiçoes.
+
+- Execute primeiro a api-movie-reviews e somente após execute api authorization-token!
+
+- link para api authorization-token
+https://github.com/matheus-diefenthaeler/authorization-token
+- Para acessar o console do H2 da api authorization-token, utilize o caminho: http://localhost:8081/h2-console e, no campo `JDBC URL:` informe o valor `jdbc:h2:tcp://localhost:9090/./testdb`
+
 ### PARTE 1 - Sistema e regras de negócio
 Crie um api onde um usuário poderá se cadastrar. Cada usuário terá um perfil na plataforma, sendo eles: LEITOR, BÁSICO, AVANÇADO, e MODERADOR. Todo usuário deve começar como LEITOR e poderá ir avançando de perfil conforme a interação com a plataforma.
 
@@ -24,15 +34,13 @@ Para que um usuário cadastrado possa realizar as operações no seu sistema, el
 
 ## API movie-reviews (Parte 1)
 
-- Para acessar o console do H2 da api-movie-reviews, utilize o caminho: http://localhost:8080/h2-console e, no campo `JDBC URL:` informe o valor `jdbc:h2:./testdb`
-- Utilize a colection e o enviroment disponibilizados no link: https://drive.google.com/file/d/1h4-ryIfz_iMl_haKYCTA3CqhC6aCWsjJ/view?usp=sharing para fazer as requisiçoes, 
-## API authorization-token (Parte 2)
-- link para api authorization-login
-https://github.com/matheus-diefenthaeler/authorization-token
-- Para acessar o console do H2 da api authorization-token, utilize o caminho: http://localhost:8081/h2-console e, no campo `JDBC URL:` informe o valor `jdbc:h2:tcp://localhost:9090/./testdb`
+- Tecnologias utilizadas:
+ - Java 11
+ - Springboot
+ - Interface JPA
+ - Banco H2
+
 # Testando a aplicacao
-## Observações:
-- Execute a primeiro a api-movie-reviews e somente após execute api authorization-token!
 
 ## Passo a passo dos testes utilizando a collection disponibilizada no inicio do readme.
 
@@ -137,3 +145,39 @@ Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibW9kZXJhZG9yQHRl
     "idUser": 1
 }
 ```
+
+- 6º Passo `[BUSCANDO UM FILME POR ID]` um usuario pode buscar atraves do imdbID um filme e verificar algumas informaçoes e avaliaçoes que foram feitas no sistema. Para isso informe tambem o mesmo token gerado anteriormente, no header `Authorization` na request `Find movie by id` da pasta `Movie`.
+
+  No body informe id da avaliçao `idRating`, o id do comentario `idComment` uma mesagem e o id do usuario `idUser`
+ * Endpoint `POST localhost:8080/movie/{imdbID}` 
+ 
+ - Resultado esperado: Status: `200 OK` 
+ ```JSON 
+{
+    "imdbID": "tt0120338",
+    "runtime": "194 min",
+    "year": "1997",
+    "country": "United States, Mexico",
+    "director": "James Cameron",
+    "actors": "Leonardo DiCaprio, Kate Winslet, Billy Zane",
+    "title": "Titanic",
+    "genre": "Drama, Romance",
+    "movieRatings": [
+        {
+            "id": 1,
+            "rate": 10,
+            "imdbID": "tt0120338",
+            "message": "Gostei do filme"
+        }
+    ]
+}
+```
+ 
+ - 7º Passo `[DELETANDO UMA AVALIAÇAO]` um usuario de perfil `MODERADOR` pode deletar uma avaliaçao informando o `idUser` e `idRate` . Para isso informe tambem o mesmo token gerado anteriormente, no header `Authorization` na request `Delete rate by idRate` da pasta `Movie`.
+   No body informe id da avaliçao `idRating` e id do usuario `idUser`
+ * Endpoint `POST localhost:8080/delete-rating` 
+ 
+ - Resultado esperado: Status: `204 NO CONTENT` a requisiçao deverá ser rejeitada caso seja informado algum campo incorreto.
+ 
+ - 8º Passo, verifique no banco H2 o Score do usuario sendo incrementado conforme interaçao com o sistema, bem como os dados sendo persistidos no banco.
+   - http://localhost:8080/h2-console `JDBC URL:` informe o valor `jdbc:h2:tcp://localhost:9090/./testdb`
