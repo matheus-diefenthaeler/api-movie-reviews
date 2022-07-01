@@ -10,6 +10,7 @@ import br.com.letscode.matheus.criticasdefilme.repositories.UserRepository;
 import br.com.letscode.matheus.criticasdefilme.request.DeleteRequest;
 import br.com.letscode.matheus.criticasdefilme.request.RateRequest;
 import br.com.letscode.matheus.criticasdefilme.service.exceptions.PermissionDeniedException;
+import br.com.letscode.matheus.criticasdefilme.service.exceptions.RatingNotFoundException;
 import br.com.letscode.matheus.criticasdefilme.service.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,6 +68,7 @@ public class RatingService {
         Optional<Rating> rating = ratingRepository.findById(deleteRequest.getIdRate());
         Optional<User> user = userRepository.findById(deleteRequest.getIdUser());
         user.orElseThrow(()-> new UserNotFoundException("User not found!"));
+        rating.orElseThrow(()-> new RatingNotFoundException("Rating not found!"));
 
         if (!userService.isAllowedToDelete(user.get())) {
             throw new PermissionDeniedException("User not allowed to delete ratings!");

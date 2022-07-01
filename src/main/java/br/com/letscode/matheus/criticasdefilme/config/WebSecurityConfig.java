@@ -22,7 +22,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/movie/rate/**").permitAll()
                 .antMatchers("/movie/**").permitAll()
                 .antMatchers("/reply").permitAll()
-                .antMatchers("/delete-comment").permitAll()
+                .antMatchers("/delete-rating").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated();
         http.headers().frameOptions().disable();

@@ -1,6 +1,7 @@
 package br.com.letscode.matheus.criticasdefilme.controler.exceptions;
 
 import br.com.letscode.matheus.criticasdefilme.service.exceptions.PermissionDeniedException;
+import br.com.letscode.matheus.criticasdefilme.service.exceptions.RatingNotFoundException;
 import br.com.letscode.matheus.criticasdefilme.service.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,19 @@ public class ResourceExceptionHandler {
         error.setTimestamp(Instant.now());
         error.setStatus(status.value());
         error.setError("Permission denied!");
+        error.setMessage(e.getMessage());
+        error.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(RatingNotFoundException.class)
+    public ResponseEntity<StandardError> ratingNotFound(
+            RatingNotFoundException e, HttpServletRequest request) {
+        status = HttpStatus.NOT_FOUND;
+        var error = new StandardError();
+        error.setTimestamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Rating not found!");
         error.setMessage(e.getMessage());
         error.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(error);
