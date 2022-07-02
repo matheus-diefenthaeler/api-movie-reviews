@@ -1,13 +1,13 @@
 # CHALLENGE - Sistema de críticas de filmes
 ## Informações importantes para utilização da api
-- Para acessar o console do H2 da api-movie-reviews, utilize o caminho: http://localhost:8080/h2-console e, no campo `JDBC URL:` informe o valor `jdbc:h2:./testdb`
+- Para acessar o console do H2 da api-movie-reviews, utilize o caminho: http://localhost:8080/h2-console e, no campo `JDBC URL:` informe o valor `jdbc:h2:file:~/apimovie-md`
 - Utilize a colection e o enviroment disponibilizados no link: https://drive.google.com/file/d/1h4-ryIfz_iMl_haKYCTA3CqhC6aCWsjJ/view?usp=sharing para fazer as requisiçoes.
 
 - Execute primeiro a api-movie-reviews e somente após execute api authorization-token!
 
 - link para api authorization-token
 https://github.com/matheus-diefenthaeler/authorization-token
-- Para acessar o console do H2 da api authorization-token, utilize o caminho: http://localhost:8081/h2-console e, no campo `JDBC URL:` informe o valor `jdbc:h2:tcp://localhost:9090/./testdb`
+- Para acessar o console do H2 da api authorization-token, utilize o caminho: http://localhost:8081/h2-console e, no campo `JDBC URL:` informe o valor `jdbc:h2:tcp://localhost:9090/~/apimovie-md`
 
 ### PARTE 1 - Sistema e regras de negócio
 Crie um api onde um usuário poderá se cadastrar. Cada usuário terá um perfil na plataforma, sendo eles: LEITOR, BÁSICO, AVANÇADO, e MODERADOR. Todo usuário deve começar como LEITOR e poderá ir avançando de perfil conforme a interação com a plataforma.
